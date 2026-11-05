@@ -255,6 +255,26 @@ textarea{min-height:86px;resize:vertical}
 .live-out .cap{font-family:Poppins,sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#0F5A52;margin-top:5px}
 footer{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:22px 4px 0;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;flex-wrap:wrap;position:relative;z-index:1}
 footer img.wmimg{height:40px;width:auto;display:block}
+/* Notebook + quick drop + collapsible structured form */
+.nb-item{padding:11px 0;border-bottom:1px solid rgba(38,42,34,.14)}
+.nb-item:last-child{border-bottom:none}
+.nb-note-body{white-space:pre-wrap;font-size:14.5px;cursor:pointer;word-wrap:break-word}
+.nb-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px}
+.nb-when{font-size:12px;color:#6B6350}
+.nb-del{background:none;border:none;font-family:Poppins,sans-serif;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#933D16;cursor:pointer;padding:2px 0;flex:none}
+.nb-goal{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(51,35,27,.14)}
+.nb-goal:last-child{border-bottom:none}
+.nb-goal input[type="checkbox"]{width:17px;height:17px;flex:none;margin-top:2px;accent-color:#B5502A;padding:0}
+.nb-goal .gt{flex:1;font-size:14.5px;min-width:0;word-wrap:break-word}
+.nb-goal.done .gt{text-decoration:line-through;color:#6B4A3A}
+.nb-goal .gd{display:block;font-size:12px;color:#6B4A3A;margin-top:1px}
+.nb-empty{font-size:13.5px;font-style:italic;padding:8px 0;line-height:1.5}
+details.update-details{margin-top:26px}
+details.update-details>summary{font-family:Poppins,sans-serif;font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--head-ink);cursor:pointer;padding:12px 4px;border-bottom:1px solid rgba(38,42,34,.18)}
+details.update-details .layered{margin-top:18px}
+.quickdrop label{color:var(--cream);margin-top:14px}
+.quickdrop label span{color:var(--cream-dim)}
+#quick-packet{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:.84rem;background:rgba(7,18,14,.4);border:1px solid rgba(245,237,216,.25);border-radius:3px;padding:15px;margin-top:16px;color:var(--cream)}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--brass);outline-offset:2px}
 @media(max-width:760px){
@@ -302,6 +322,7 @@ table,tr,td{display:block;width:100%}thead{display:none}td{border:none;padding:3
 <button role="tab" aria-selected="false" data-tab="events">Events</button>
 <button role="tab" aria-selected="false" data-tab="books">The Books</button>
 <button role="tab" aria-selected="false" data-tab="update">Sara's Update</button>
+<button role="tab" aria-selected="false" data-tab="notebook">Notebook</button>
 </div></nav>
 
 <main class="stage">
@@ -400,6 +421,7 @@ table,tr,td{display:block;width:100%}thead{display:none}td{border:none;padding:3
 <div class="boardcol"><h4>Appointments</h4><div id="board-appointments"></div></div>
 <div class="boardcol"><h4>Deadlines</h4><div id="board-deadlines"></div></div>
 </div>
+<p class="small" style="margin-top:12px">Reminders, appointments and deadlines from Sara&rsquo;s updates appear here after the morning refresh.</p>
 </div></div>
 
 <div class="layered tone-grey"><div class="panel tone-grey queue">
@@ -524,6 +546,21 @@ table,tr,td{display:block;width:100%}thead{display:none}td{border:none;padding:3
 <div class="tabpanel" id="panel-update" hidden>
 <div class="decklabel"><span>For Sara — 5 minutes, once a month</span><i></i></div>
 <p class="lede">Fill in whatever you know and skip the rest. The button at the bottom packages your answers into one tidy update you can email or download and send back — then this page gets swept and refreshed at this same link with your real numbers next to the public data. Nothing you type is stored or sent anywhere by this page itself.</p>
+<div class="layered tone-teal"><div class="panel tone-teal quickdrop">
+<h2>Send an update — takes 10 seconds</h2>
+<p style="font-size:15px">Whatever you type lands with Lucian's assistant, which republishes this page every morning — numbers become charts, reminders and deadlines land on The Board.</p>
+<label for="q-text">Your update</label>
+<textarea id="q-text" placeholder="Type anything: this week's numbers, a reminder, a deadline, a correction, a new event…"></textarea>
+<label for="q-when">Date / when <span>(optional)</span></label>
+<input id="q-when" type="text" placeholder="e.g. Sat Nov 14, 10 am">
+<div id="quick-packet" hidden></div>
+<div class="btn-row"><button class="btn" id="btn-quick-send" type="button">Send update</button><button class="btn secondary" id="btn-quick-copy" type="button" style="color:var(--teal-bright);border-color:rgba(245,237,216,.35)">Copy instead</button></div>
+<p class="small" id="quick-status" role="status"></p>
+<p class="small">Send opens your own mail app with the update addressed and ready — one tap there sends it on its way.</p>
+</div></div>
+
+<details class="update-details">
+<summary>Add exact numbers instead (optional)</summary>
 <div class="layered tone-grey"><div class="panel tone-grey">
 <form id="updateForm">
 <h3 style="margin:4px 0 12px">This month at the clinic</h3><div class="fgrid">
@@ -575,6 +612,35 @@ table,tr,td{display:block;width:100%}thead{display:none}td{border:none;padding:3
 <p class="small">Email opens your own mail app with the packet ready to send. If it opens blank on your device, use Copy or Download instead and send the packet back any way you like. Once it arrives, the next sweep folds these numbers into this page.</p>
 <p class="small"><strong>Sources &amp; honesty notes.</strong> Public snapshot swept 5 Nov 2026 from ziapphysio.com, Instagram (@ziaphysiotherapy, @jennahamra.dpt), FINRA BrokerCheck, NPI Profile, Bornbir, ECU Athletics, Sharecare, Birdeye, Mamistad, Eventbrite, FFXnow, findhealthclinics, and competitor sites named above. Revenue, patient counts and website traffic were not published anywhere and are never estimated on this page — they appear only when Sara supplies them.</p>
 </div></div>
+</details>
+</div>
+
+<!-- ================= NOTEBOOK ================= -->
+<div class="tabpanel" id="panel-notebook" hidden>
+<div class="decklabel"><span>Notebook — Sara's private workspace</span><i></i></div>
+<p class="lede">Your notebook — saved automatically on this device as you type. No account, nothing to send. Private to this browser.</p>
+<div class="cards">
+<div class="layered tone-grey"><div class="panel tone-grey">
+<h3>Notes</h3>
+<label for="nb-note-text">Write a note</label>
+<textarea id="nb-note-text" placeholder="Jot anything — a win, an idea, something to remember…"></textarea>
+<div class="btn-row" style="margin-top:10px"><button class="btn" id="nb-note-save" type="button">Save note</button><span class="small" id="nb-draft-status" role="status" style="align-self:center"></span></div>
+<div id="nb-notes" style="margin-top:14px"></div>
+</div></div>
+<div class="layered tone-pink"><div class="panel tone-pink">
+<h3>Goals</h3>
+<label for="nb-goal-text">Add a goal</label>
+<input id="nb-goal-text" type="text" placeholder="e.g. Get our first 10 Google reviews">
+<label for="nb-goal-date" style="margin-top:10px">Target date <span>(optional)</span></label>
+<input id="nb-goal-date" type="date">
+<div class="btn-row" style="margin-top:10px"><button class="btn" id="nb-goal-add" type="button">Add goal</button></div>
+<div id="nb-goal-progress" style="margin-top:16px" hidden>
+<div class="bar-track" style="background:rgba(51,35,27,.18)"><div class="bar-fill" id="nb-goal-bar" style="width:0%;background:var(--terra)"></div></div>
+<p class="small" id="nb-goal-count" style="margin-top:6px;color:#6B4A3A"></p>
+</div>
+<div id="nb-goals" style="margin-top:6px"></div>
+</div></div>
+</div>
 </div>
 </main>
 
@@ -788,7 +854,137 @@ table,tr,td{display:block;width:100%}thead{display:none}td{border:none;padding:3
   build();
   document.getElementById('btn-copy').addEventListener('click',function(){var t=build();var st=document.getElementById('copy-status');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='Copied \u2014 paste it into any message or email to send it back.';},function(){st.textContent='Copy was blocked by the browser \u2014 use Download instead.';});}else{st.textContent='Copy is not available here \u2014 use Download instead.';}});
   document.getElementById('btn-download').addEventListener('click',function(){var blob=new Blob([build()],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zia-update-'+(val('month')||'packet')+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);document.getElementById('copy-status').textContent='Downloaded \u2014 send that file back and the next sweep folds it in.';});
-  document.getElementById('btn-email').addEventListener('click',function(){var subject=encodeURIComponent('Zia Command Center Update'+(val('month')?' \u2014 '+val('month'):''));var body=encodeURIComponent(build());var a=document.createElement('a');a.href='mailto:hello@ziaphysio.com?subject='+subject+'&body='+body;document.body.appendChild(a);a.click();a.remove();document.getElementById('copy-status').textContent='Your mail app should open with the packet ready \u2014 if nothing opened, use Copy or Download instead.';});
+  document.getElementById('btn-email').addEventListener('click',function(){var subject=encodeURIComponent('Zia Command Center Update'+(val('month')?' \u2014 '+val('month'):''));var body=encodeURIComponent(build());var a=document.createElement('a');a.href='mailto:lucianbrucker@gmail.com?subject='+subject+'&body='+body;document.body.appendChild(a);a.click();a.remove();document.getElementById('copy-status').textContent='Your mail app should open with the packet ready \u2014 if nothing opened, use Copy or Download instead.';});
+})();
+</script>
+
+<script>
+(function(){
+  /* ===== Notebook — Sara's private workspace. Browser-local only:
+     notes and goals live in localStorage on this device, never enter
+     PULSE, and are never included in any update packet. ===== */
+  var NKEY='zia-notes-v1', GKEY='zia-goals-v1', DKEY='zia-notes-draft-v1';
+  function loadList(k){ try{ var v=JSON.parse(localStorage.getItem(k)); return (v&&v.length!==undefined)?v:[]; }catch(e){ return []; } }
+  function saveList(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+  function fmtWhen(ts){ try{ return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
+  function fmtDay(s){ var p=(s||'').split('-'); if(p.length!==3) return s; var d=new Date(+p[0],+p[1]-1,+p[2]); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+
+  var noteTa=document.getElementById('nb-note-text');
+  var goalTx=document.getElementById('nb-goal-text');
+  if(!noteTa||!goalTx) return;
+  var noteSaveBtn=document.getElementById('nb-note-save');
+  var draftStatus=document.getElementById('nb-draft-status');
+  var notesBox=document.getElementById('nb-notes');
+  var goalsBox=document.getElementById('nb-goals');
+  var notes=loadList(NKEY), goals=loadList(GKEY), editingId=null;
+
+  try{ var draft=localStorage.getItem(DKEY); if(draft){ noteTa.value=draft; draftStatus.textContent='Draft restored — still only on this device.'; } }catch(e){}
+  noteTa.addEventListener('input',function(){
+    if(editingId===null){ try{ localStorage.setItem(DKEY,noteTa.value); }catch(e){} draftStatus.textContent=noteTa.value?'Draft saved on this device.':''; }
+  });
+
+  function renderNotes(){
+    notesBox.innerHTML='';
+    if(!notes.length){
+      var p=document.createElement('p'); p.className='nb-empty'; p.textContent='No notes yet — jot the first one above.'; notesBox.appendChild(p); return;
+    }
+    var sorted=notes.slice().sort(function(a,b){return b.ts-a.ts;});
+    sorted.forEach(function(n){
+      var item=document.createElement('div'); item.className='nb-item';
+      var body=document.createElement('div'); body.className='nb-note-body'; body.textContent=n.text; body.title='Tap to edit';
+      body.addEventListener('click',function(){
+        editingId=n.id; noteTa.value=n.text; noteSaveBtn.textContent='Save changes'; draftStatus.textContent='Editing — tap Save changes when done.';
+        noteTa.focus(); noteTa.scrollIntoView({block:'center',behavior:'smooth'});
+      });
+      var meta=document.createElement('div'); meta.className='nb-meta';
+      var when=document.createElement('span'); when.className='nb-when'; when.textContent=fmtWhen(n.ts); meta.appendChild(when);
+      var del=document.createElement('button'); del.type='button'; del.className='nb-del'; del.textContent='Delete';
+      del.addEventListener('click',function(){
+        notes=notes.filter(function(x){return x.id!==n.id;}); saveList(NKEY,notes);
+        if(editingId===n.id){ editingId=null; noteTa.value=''; noteSaveBtn.textContent='Save note'; draftStatus.textContent=''; }
+        renderNotes();
+      });
+      meta.appendChild(del);
+      item.appendChild(body); item.appendChild(meta); notesBox.appendChild(item);
+    });
+  }
+  noteSaveBtn.addEventListener('click',function(){
+    var text=noteTa.value.trim(); if(!text){ draftStatus.textContent='Write a line or two first.'; noteTa.focus(); return; }
+    if(editingId!==null){
+      notes.forEach(function(n){ if(n.id===editingId) n.text=text; });
+      editingId=null; noteSaveBtn.textContent='Save note';
+    } else {
+      notes.push({id:'n'+Date.now(), ts:Date.now(), text:text});
+    }
+    saveList(NKEY,notes);
+    noteTa.value=''; try{ localStorage.removeItem(DKEY); }catch(e){}
+    draftStatus.textContent='Note saved — only on this device.';
+    renderNotes();
+  });
+
+  function renderGoals(){
+    goalsBox.innerHTML='';
+    var prog=document.getElementById('nb-goal-progress');
+    if(!goals.length){
+      prog.hidden=true;
+      var p=document.createElement('p'); p.className='nb-empty'; p.style.color='#6B4A3A'; p.textContent='No goals yet — add the first one above.'; goalsBox.appendChild(p); return;
+    }
+    var done=goals.filter(function(g){return g.done;}).length;
+    prog.hidden=false;
+    document.getElementById('nb-goal-bar').style.width=(goals.length?Math.round(done/goals.length*100):0)+'%';
+    document.getElementById('nb-goal-count').textContent=done+' of '+goals.length+' done';
+    goals.forEach(function(g){
+      var row=document.createElement('div'); row.className='nb-goal'+(g.done?' done':'');
+      var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!g.done; cb.setAttribute('aria-label','Mark goal done: '+g.text);
+      cb.addEventListener('change',function(){ g.done=cb.checked; saveList(GKEY,goals); renderGoals(); });
+      var tx=document.createElement('span'); tx.className='gt'; tx.textContent=g.text;
+      if(g.date){ var gd=document.createElement('span'); gd.className='gd'; gd.textContent='Target: '+fmtDay(g.date); tx.appendChild(gd); }
+      var del=document.createElement('button'); del.type='button'; del.className='nb-del'; del.textContent='Delete';
+      del.addEventListener('click',function(){ goals=goals.filter(function(x){return x.id!==g.id;}); saveList(GKEY,goals); renderGoals(); });
+      row.appendChild(cb); row.appendChild(tx); row.appendChild(del); goalsBox.appendChild(row);
+    });
+  }
+  function addGoal(){
+    var text=goalTx.value.trim(); if(!text){ goalTx.focus(); return; }
+    goals.push({id:'g'+Date.now(), text:text, date:document.getElementById('nb-goal-date').value||'', done:false});
+    saveList(GKEY,goals);
+    goalTx.value=''; document.getElementById('nb-goal-date').value='';
+    renderGoals(); goalTx.focus();
+  }
+  document.getElementById('nb-goal-add').addEventListener('click',addGoal);
+  goalTx.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); addGoal(); } });
+
+  renderNotes(); renderGoals();
+  window.__ziaNotebook={notes:function(){return notes;},goals:function(){return goals;}};
+
+  /* ===== Quick drop — same send path as the structured form below:
+     a packet in her mail app, subject keeps "Zia Command Center" so the
+     morning sweep intake recognizes it. Notebook content is never included. ===== */
+  var qText=document.getElementById('q-text'), qWhen=document.getElementById('q-when');
+  var qPacket=document.getElementById('quick-packet'), qStatus=document.getElementById('quick-status');
+  function quickBuild(){
+    var lines=['ZIA COMMAND CENTER \u2014 QUICK UPDATE FROM SARA','Sent: '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})];
+    if(qWhen.value.trim()){ lines.push('When: '+qWhen.value.trim()); }
+    lines.push(''); lines.push(qText.value.trim());
+    return lines.join('\n');
+  }
+  function quickPreview(){
+    if(qText.value.trim()){ qPacket.hidden=false; qPacket.textContent=quickBuild(); }
+    else { qPacket.hidden=true; qPacket.textContent=''; }
+  }
+  qText.addEventListener('input',quickPreview); qWhen.addEventListener('input',quickPreview);
+  document.getElementById('btn-quick-send').addEventListener('click',function(){
+    if(!qText.value.trim()){ qStatus.textContent='Type a line or two first — anything at all counts.'; qText.focus(); return; }
+    var subject=encodeURIComponent('Zia Command Center Update \u2014 Quick Drop');
+    var a=document.createElement('a'); a.href='mailto:lucianbrucker@gmail.com?subject='+subject+'&body='+encodeURIComponent(quickBuild());
+    document.body.appendChild(a); a.click(); a.remove();
+    qStatus.textContent='Your mail app should open with your update ready to send — once it lands, the morning refresh folds it into this page. If nothing opened, use Copy instead.';
+  });
+  document.getElementById('btn-quick-copy').addEventListener('click',function(){
+    if(!qText.value.trim()){ qStatus.textContent='Type a line or two first — anything at all counts.'; qText.focus(); return; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(quickBuild()).then(function(){ qStatus.textContent='Copied — paste it into any message or email to send it back.'; },function(){ qStatus.textContent='Copy was blocked by the browser — select the packet above and copy it by hand.'; }); }
+    else { qStatus.textContent='Copy is not available here — select the packet above and copy it by hand.'; }
+  });
 })();
 </script>
 
